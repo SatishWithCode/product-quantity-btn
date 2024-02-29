@@ -1,0 +1,52 @@
+                     <div class="description">
+                        <?php echo $row['content'];?>
+                        <p style="display:none;">Price : <span id="unit-price">78</span></p>
+                        <p>Price : <span id="total-price">78</span></p>
+                        <label for="quantity1">Quantity:</label>
+                        <div class="quantity-input">
+                            <button type="button" class="quantity-btn minus">-</button>
+                            <input type="text" id="quantity1" name="quantities[]" data-step="1" data-min="1" value="1" title="Qty" class="input-qty qty" size="4" readonly>
+                            <button type="button" class="quantity-btn plus">+</button>
+                        </div> 
+                        <a href="#" id="add-to-cart-btn">Add to Cart</a>
+                    </div>
+
+<script>
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const productId = <?php echo $row['id']; ?>; // Assuming 'id' is the column name for the product ID in your database
+    addToCartBtn.href = 'cart.php?product_id=' + productId; // Modify 'cart.php' with your actual cart page URL
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const quantityInput = document.getElementById("quantity1");
+        const unitPrice = document.getElementById("unit-price");
+        const totalPrice = document.getElementById("total-price");
+        const minusButton = document.querySelector(".quantity-btn.minus");
+        const plusButton = document.querySelector(".quantity-btn.plus");
+
+        function updateTotalPrice() {
+            let quantity = parseInt(quantityInput.value) || 0;
+            let price = parseFloat(unitPrice.textContent) || 0;
+            totalPrice.textContent = (quantity * price).toFixed(2);
+        }
+
+        minusButton.addEventListener("click", function() {
+            let value = parseInt(quantityInput.value) || 0;
+            const min = parseInt(quantityInput.getAttribute("data-min")) || 0;
+            value = Math.max(min, value - (parseInt(quantityInput.getAttribute("data-step")) || 1));
+            quantityInput.value = value;
+            updateTotalPrice();
+        });
+
+        plusButton.addEventListener("click", function() {
+            let value = parseInt(quantityInput.value) || 0;
+            value += parseInt(quantityInput.getAttribute("data-step")) || 1;
+            quantityInput.value = value;
+            updateTotalPrice();
+        });
+
+        quantityInput.addEventListener("change", function() {
+            updateTotalPrice();
+        });
+    });
+</script>
